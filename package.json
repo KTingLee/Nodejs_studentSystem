@@ -1,0 +1,18 @@
+{
+  "name": "project4_studentSystem_v2",
+  "version": "1.0.0",
+  "description": "這是第四個MVC專案，包含了連結資料庫、Ajax使用，學習RESTful風格的路由設置，資料庫的模組採用 mongoose",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^3.0.2",
+    "express": "^4.17.1",
+    "formidable": "^1.2.2",
+    "mongodb": "^3.5.5",
+    "mongoose": "^5.9.7"
+  }
+}

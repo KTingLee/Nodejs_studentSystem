@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="">
+    <title>學生管理系統</title>
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <link href="/css/font-awesome.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/PageNav.js"></script>
+    <!-- 分頁條樣式 -->
+    <style type="text/css">
+    #pagenavbox a {
+        float: left;
+        padding: 4px 10px;
+        border: 1px solid #000;
+    }
+
+    #pagenavbox a.cur {
+        background-color: gray;
+    }
+
+    #pagenavbox a:focus {
+        text-decoration: none;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="navbar navbar-inverse set-radius-zero">
+        <div class="container">
+            <div class="left-div">
+                <div class="user-settings-wrapper">
+                    <ul class="nav">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="/" aria-expanded="false">
+                            <span style="font-size: 25px; color : white;">
+                                學生管理系統
+                            </span>
+                        </a>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section class="menu-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="navbar-collapse collapse">
+                        <ul id="menu-top" class="nav navbar-nav navbar-right">
+                            <!-- 當前頁面會以 "menu-top-active" 樣式渲染 -->
+                            <li>
+                                <a class="menu-top-active" href="/">所有學生資料</a>
+                            </li>
+                            <li>
+                                <a href="/add">增加學生</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="content-wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 class="page-head-line">學生資料表</h1>
+                </div>
+            </div>
+            <div class="row">
+                <!-- 由 md-6 改成 md-12，這樣表格就會全版 -->
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            學生資料表
+                        </div>
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <!-- 第一列(row)，設定標題(header) -->
+                                        <tr>
+                                            <th>學號</th>
+                                            <th>姓名</th>
+                                            <th>性別</th>
+                                            <th>年齡</th>
+                                            <th>戶籍地</th>
+                                        </tr>
+                                    </thead>
+                                    <!-- 透過 Ajax 求得數據後，以 js 語法插入 -->
+                                    <tbody id="studentsList">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="pagenavbox"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    &copy; 2015 YourCompany | By : <a href="/" target="_blank">DesignBootstrap</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+<script type="text/javascript">
+    
+    // 載入時直接請求，並建立分頁條
+    $.get("/student?page=1", function(data){
+        // 製作分頁條
+        new PageNav({
+            boxid: "pagenavbox",
+            page: 1,
+            pageAmount: data.pageAmount,
+            change: function(pageNumber) {
+                getStudentData(pageNumber)
+            }
+        })
+        // 一進入網頁時，先產生分頁條物件，並直接先拉第一頁的資料
+        getStudentData(1);
+    })
+
+
+    // 發出 Ajax 請求(採 get 方式)，以獲取學生資料
+    function getStudentData(pageNumber) {
+        // 先清空學生表格中的元素，待會會補上
+        $("#studentsList").empty()
+
+        // 前往 "後端為前端提供資料的接口(路由)"，以獲得學生資料
+        $.get("/student?page=" + pageNumber, function(data) {
+            // 遍歷所有資料，因為在 mainCtrl 中，將學生資料塞到 results 屬性中
+            $.each(data.results, function(i, n) {
+                // 以 js 方式建立標籤，<tr> Row, <td> Document
+                // 建立 tr 標籤，並放在變數 tr 中
+                $tr = $("<tr></tr>")
+
+                // 建立 td 標籤及內容，並添加在 tr 變數下(tr變數為 <tr> 標籤)
+                $("<td></td>").html(n.stu_id).appendTo($tr);
+                $("<td></td>").html(n.Name).appendTo($tr);
+                $("<td></td>").html(n.Sex).appendTo($tr);
+                $("<td></td>").html(n.Age).appendTo($tr);
+                $("<td></td>").html(n.Provice).appendTo($tr);
+
+                // 建立修改、刪除按鈕，並附上學生學號資料
+                $delBtn = "<input type='button' class='btn btn-danger delBtn'  data-sid=" + n.stu_id + " value='刪除'>"
+                $modBtn = "<input type='button' class='btn btn-warning modBtn' data-sid=" + n.stu_id + " value='修改'>"
+                $("<td>" + $delBtn + " " + $modBtn + "</td>").appendTo($tr)
+
+                // 最後將 tr 變數添加至表單中
+                $tr.appendTo($("#studentsList"))
+
+            })
+        })
+    }
+
+
+    // 因為上述按鈕是以動態方式產生，所以利用委託函數來監聽(委託其父元素)
+    // 監聽 class 包含 delBtn 的子元素，並監聽 click 事件
+    $("#studentsList").delegate(".delBtn", "click", function() {
+        // 確認框
+        if (!confirm("確定刪除？")) {
+            return;
+        }
+        // 存放 this 物件，不然等等 ajax 函數中引用的 this 會衝突，這邊的 this 為 input 標籤
+        var $this = $(this);
+
+        // 該子元素含有學號資料，透過 attr() 獲得數據
+        var sid = $(this).attr("data-sid");
+        // 向後端發出 Ajax 請求，類型是 delete
+        $.ajax({
+            type: "delete",
+            url: "/student/" + sid,
+            success: function(mes) {
+                if (mes.results == 0) {
+                    alert("資料庫寫入失敗了...")
+                } else if (mes.results == -1) {
+                    alert("沒有這位學生！")
+                } else {
+                    alert("學生已刪除！")
+                    // 不用載入頁面以重新刷新
+                    // 不停向上找，找到為 <tr> 就刪除(找到符合就不再找)
+                    $this.closest("tr").remove()
+                }
+            }
+        })
+    })
+
+    // 監聽 class 包含 modBtn 的子元素，並監聽 click 事件
+    $("#studentsList").delegate(".modBtn", "click", function() {
+        // 該子元素含有學號資料，透過 attr() 獲得數據
+        var sid = $(this).attr("data-sid");
+        // 跳轉頁面
+        window.location = "/student/" + sid;
+    })
+</script>
+
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="">
+    <title>學生個人資料 - 學生管理系統</title>
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <link href="/css/font-awesome.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+
+    <style type="text/css">
+        /*為警告框做的*/
+        .alert{
+            padding: 0 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navbar navbar-inverse set-radius-zero">
+        <div class="container">
+            <div class="left-div">
+                <div class="user-settings-wrapper">
+                    <ul class="nav">
+                        <span style="font-size: 25px; color : white;">
+                            個人資料
+                        </span>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section class="menu-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="navbar-collapse collapse">
+                        <ul id="menu-top" class="nav navbar-nav navbar-right">
+                            <li>
+                                <a href="/">首頁</a>
+                            </li>
+                            <li>
+                                <a class="menu-top-active" href="/add">個人資料</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="content-wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 class="page-head-line">你的資料</h1>
+                </div>
+            </div>
+            <div class="row">
+                <!-- 用 md-1 與 md-5，讓輸入框的界面好看點。 每一組都用 row 包住，不然會並排 -->
+                <div class="col-md-1 text-left">
+                    <p>
+                        學號:
+                    </p>
+                </div>
+                <div class="col-md-5">
+                    <p>
+                        <input type="text" class="form-control" name="stu_id" value="<%= studentInfo.stu_id %>", disabled>
+                    </p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-1 text-left">
+                    <p>
+                        姓名:
+                    </p>
+                </div>
+                <div class="col-md-5">
+                    <p>
+                        <input type="text" class="form-control" name="Name" value="<%= studentInfo.Name %>">
+                    </p>
+                </div>
+            </div>
+                
+            <div class="row">
+                <div class="col-md-1 text-left">
+                    <p>
+                        年齡:
+                    </p>
+                </div>
+                <div class="col-md-5">
+                    <p>
+                        <input type="text" class="form-control" name="Age" value="<%= studentInfo.Age %>">
+                    </p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-1 text-left">
+                    <p>
+                        性別:
+                    </p>
+                </div>
+                <div class="col-md-5">
+                    <p>
+                        <input type="radio" value="男" name="Sex" <% if(studentInfo.Sex == "男"){ %>
+                        checked 
+                        <% } %> >男
+                        
+                        <input type="radio" value="女" name="Sex" <% if(studentInfo.Sex == "女"){ %>
+                        checked
+                        <% } %> >女
+                    </p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-1 text-left">
+                    <p>
+                        戶籍地:
+                    </p>
+                </div>
+                <div class="col-md-5">
+                    <p>
+                        <input type="text" class="form-control" name="Provice" value="<%= studentInfo.Provice %>">
+                    </p>
+                </div>
+            </div>
+
+            <!-- 用 button 標籤，在 class 指定樣式 -->
+            <div class="row">
+                <div class="col-md-2">
+                </div>
+                <div class="col-md-1">
+                    <button class="btn btn-success" id="btn1">提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    &copy; 2015 YourCompany | By : <a href="/" target="_blank">DesignBootstrap</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+<!-- 透過Ajax，以 post 提交學生資料 -->
+<script type="text/javascript">
+    // 監聽 id=btn1 的元素，當觸發點擊事件時，執行匿名函數
+    $("#btn1").click(function(){
+        // 根據當前網址，抓取學號
+        var url_reg = /\/([\d]{6})$/
+        var stu_url_id = url_reg.exec(location.href)[1]
+
+        // 輸入框學號
+        var sid = $("input[name=stu_id]").val()
+        
+        // 驗證網址中的學號是否與輸入框一致
+        if(stu_url_id != sid){
+            alert("不要亂改學號！")
+            return
+        }
+        // 向 /student/:sid 路由，發出 post 請求
+        $.post("/student/" + stu_url_id, {
+            Name   : $("input[name=Name]").val(),
+            Age    : $("input[name=Age]").val(),
+            Sex    : $("input[name=Sex]:checked").val(),
+            Provice: $("input[name=Provice]").val()
+        }, 
+        // 異步等待後端發送來的訊息，之所以是 results 是因為 mainCtrl 中，回傳的部分寫 res.json({"results" : 1})
+        function(mes){
+            if(mes.results == 1){
+                alert('學生資料修改成功！')
+                // 清空所有輸入框
+                window.location = "/"
+                return;
+            }else if(mes.results == -1){
+                alert('學生修改失敗，沒有這位學生哦QQ')
+                return;
+            }else if(mes.results == -2){
+                alert('學生資料儲存失敗，資料庫出錯了QQ')
+            }
+        })
+    })
+</script>
+
+</html>

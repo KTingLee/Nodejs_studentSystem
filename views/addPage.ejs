@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="">
+    <title>增加學生 - 學生管理系統</title>
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <link href="/css/font-awesome.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+
+    <style type="text/css">
+        /*為警告框做的*/
+        .alert{
+            padding: 0 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navbar navbar-inverse set-radius-zero">
+        <div class="container">
+            <div class="left-div">
+                <div class="user-settings-wrapper">
+                    <ul class="nav">
+                        <span style="font-size: 25px; color : white;">
+                            新增學生
+                        </span>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section class="menu-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="navbar-collapse collapse">
+                        <ul id="menu-top" class="nav navbar-nav navbar-right">
+                            <!-- 當前頁面會以 "menu-top-active" 樣式渲染 -->
+                            <li>
+                                <a href="/">所有學生資料</a>
+                            </li>
+                            <li>
+                                <a class="menu-top-active" href="/add">增加學生</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="content-wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 class="page-head-line">新增學生</h1>
+                </div>
+            </div>
+            <div class="row">
+                <!-- 用 md-1 與 md-5，讓輸入框的界面好看點。 每一組都用 row 包住，不然會並排 -->
+                <div class="col-md-1 text-left">
+                    <p>
+                        學號:
+                    </p>
+                </div>
+                <div class="col-md-5">
+                    <p>
+                        <input type="text" class="form-control" name="stu_id">
+                    </p>
+                    <!-- 學號不能重複。一開始隱藏，所以使用 style="display: none;" -->
+                    <div class="alert alert-danger" role="alert" id="stu_tip" style="display: none;">
+                        學號已存在，請重新輸入！
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-1 text-left">
+                    <p>
+                        姓名:
+                    </p>
+                </div>
+                <div class="col-md-5">
+                    <p>
+                        <input type="text" class="form-control" name="Name">
+                    </p>
+                </div>
+            </div>
+                
+            <div class="row">
+                <div class="col-md-1 text-left">
+                    <p>
+                        年齡:
+                    </p>
+                </div>
+                <div class="col-md-5">
+                    <p>
+                        <input type="text" class="form-control" name="Age">
+                    </p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-1 text-left">
+                    <p>
+                        性別:
+                    </p>
+                </div>
+                <div class="col-md-5">
+                    <p>
+                        <input type="radio" value="男" name="Sex">男
+                        <input type="radio" value="女" name="Sex">女
+                    </p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-1 text-left">
+                    <p>
+                        戶籍地:
+                    </p>
+                </div>
+                <div class="col-md-5">
+                    <p>
+                        <input type="text" class="form-control" name="Provice">
+                    </p>
+                </div>
+            </div>
+
+            <!-- 用 button 標籤，在 class 指定樣式 -->
+            <div class="row">
+                <div class="col-md-2">
+                </div>
+                <div class="col-md-1">
+                    <button class="btn btn-success" disabled=true id="btn1">提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    &copy; 2015 YourCompany | By : <a href="/" target="_blank">DesignBootstrap</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+<!-- 透過Ajax，以 post 提交學生資料 -->
+<script type="text/javascript">
+    // 監聽 name=stu_id 的元素，若輸入框的輸入游標離開後，後觸發 blur 事件
+    $("input[name=stu_id]").blur(function(){
+        $("#btn1").attr("disabled", true)
+        var sid = $("input[name=stu_id]").val()
+        // 當輸入框為空的時候先不進行 Ajax 請求，並跳出提示
+        if (!$("input[name=stu_id]").val()){
+            $("#stu_tip").removeClass().addClass("alert alert-danger").html("學號不能為空").show();
+            return;
+        }else if( !(sid >= 100000 && sid <= 999999) ){
+            $("#stu_tip").removeClass().addClass("alert alert-danger").html("學號必須為六位數字").show();
+            return;
+        }
+        // 發出 Ajax 請求，type 輸入請求型態；url 為請求路由；success 為後端處理完請求之回應
+        $.ajax({
+            type : "propfind",
+            url  : "/student/" + $("input[name=stu_id]").val(),
+            success : function(mes){
+                if (mes != 1){
+                    $("#stu_tip").removeClass().addClass("alert alert-warning").html("學號已存在").show();
+                }else{
+                    $("#stu_tip").removeClass().addClass("alert alert-success").html("學號可使用").show();
+                    $("#btn1").removeAttr("disabled")
+                }
+            }
+        })
+    })
+    
+    // 當學號輸入框 focus 時(正在輸入的狀態)，提示框消失
+    $("input[name=stu_id]").focus(function(){
+        $("#stu_tip").hide();
+    })
+    
+
+    // 監聽 id=btn1 的元素，當觸發點擊事件時，執行匿名函數
+    $("#btn1").click(function(){
+        // 向 /add 路由，發出 post 請求
+        $.post("/add", {
+            stu_id : $("input[name=stu_id]").val(),
+            Name   : $("input[name=Name]").val(),
+            Age    : $("input[name=Age]").val(),
+            Sex    : $("input[name=Sex]:checked").val(),
+            Provice: $("input[name=Provice]").val()
+        }, 
+        // 異步等待後端發送來的訊息，之所以是 results 是因為 mainCtrl 中，回傳的部分寫 res.json({"results" : 1})
+        function(mes){
+            if(mes.results == 1){
+                alert('學生資料儲存成功！')
+                // 清空所有輸入框
+                $("input[type=text]").val('')
+                return;
+            }else if(mes.results == -3){
+                alert('學生資料儲存失敗，年齡可能錯囉QQ')
+                return;
+            }else if(mes.results == 0){
+                alert('學生資料儲存失敗，就跟你說學號存在了QQ')
+            }else if(mes.results == -2){
+                alert('學生資料儲存失敗，就跟你說不合格式了QQ')
+            }
+                alert('還想亂改往頁R ˋAˊ')
+        })
+    })
+
+</script>
+
+</html>
