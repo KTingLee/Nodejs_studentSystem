@@ -167,8 +167,8 @@
         }
         // 發出 Ajax 請求，type 輸入請求型態；url 為請求路由；success 為後端處理完請求之回應
         $.ajax({
-            type : "propfind",
-            url  : "/student/" + $("input[name=stu_id]").val(),
+            type : "get",
+            url  : "/api/students/" + $("input[name=stu_id]").val(),
             success : function(mes){
                 if (mes != 1){
                     $("#stu_tip").removeClass().addClass("alert alert-warning").html("學號已存在").show();

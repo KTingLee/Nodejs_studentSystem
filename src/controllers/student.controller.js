@@ -1,8 +1,3 @@
-/*
-控制器，使用、指派函數
-例如定義路由對應的功能
-*/
-
 var formidable = require("formidable");
 var Student = require("../models/Student.js")
 var url = require("url")
@@ -41,8 +36,8 @@ var addStudentData = function(req, res){
 
 // 當學號輸入框一沒有 focus 時(也就是離開輸入)會觸發 blur 事件
 // 觸發後會向 /student/add 路由，發出 propfind 請求(一般是做為查詢的請求)，接著後端接收到請求後，執行此函數
-var checkStudent_id = function(req, res){
-    Student.checkStu_id(req.params.sid, function(id_can_use){
+function get (req, res, next) {
+    Student.checkStu_id(req.obj.stu_id, function(id_can_use){
         if(id_can_use != 1){
             res.send(id_can_use.toString())  // 若學號存在會回傳 0；若不符合格式會回傳 -2
             return;
@@ -52,10 +47,7 @@ var checkStudent_id = function(req, res){
 
 }
 
-
-// 查詢學生資料，並傳至前端 Ajax 要使用的接口
-// 因為要做分頁條，所以會先判斷讀取的頁數，以提供相對應的學生資料
-var getStudents = function(req, res){
+function list (req, res, next){
     // 需提供的頁碼，因為前端提供的分頁條起始為第 1 頁，但 js 起始索引為 0，故要減 1，這樣才不會錯誤地略過資料
     var thisPage = url.parse(req.url, true).query.page -1 || 0;
 
@@ -76,6 +68,22 @@ var getStudents = function(req, res){
     })
 }
 
+async function load (req, res, next, id) {
+    if (!Number.isInteger(+id)) {
+        throw new APIError({status: httpStatus.BAD_REQUEST, message: 'user id error'})
+      }
+      try {
+        const obj = await Student.find({"stu_id" : id})
+        if (!obj) {
+          throw new APIError({status: httpStatus.NOT_FOUND, message: 'user id not exist'})
+        }
+        req.obj = obj
+        next()
+        return null
+      } catch (e) {
+        next(e)
+      }
+}
 
 // 顯示學生個人資料頁面
 var showStudent = function(req, res){
@@ -142,12 +150,10 @@ var deleteStudent = function(req, res){
 }
 
 
-
+export default {list, get, load, }
 exports.showIndex = showIndex;
 exports.showAdd = showAdd;
 exports.addStudentData = addStudentData;
-exports.checkStudent_id = checkStudent_id;
-exports.getStudents = getStudents;
 exports.showStudent = showStudent;
 exports.updateStudent = updateStudent;
 exports.deleteStudent = deleteStudent;

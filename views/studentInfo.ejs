@@ -168,7 +168,7 @@
             return
         }
         // 向 /student/:sid 路由，發出 post 請求
-        $.post("/student/" + stu_url_id, {
+        $.post("/students/" + stu_url_id, {
             Name   : $("input[name=Name]").val(),
             Age    : $("input[name=Age]").val(),
             Sex    : $("input[name=Sex]:checked").val(),

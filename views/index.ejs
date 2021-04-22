@@ -117,7 +117,7 @@
 <script type="text/javascript">
     
     // 載入時直接請求，並建立分頁條
-    $.get("/student?page=1", function(data){
+    $.get("/api/students?page=1", function(data){
         // 製作分頁條
         new PageNav({
             boxid: "pagenavbox",
@@ -138,7 +138,7 @@
         $("#studentsList").empty()
 
         // 前往 "後端為前端提供資料的接口(路由)"，以獲得學生資料
-        $.get("/student?page=" + pageNumber, function(data) {
+        $.get("/api/students?page=" + pageNumber, function(data) {
             // 遍歷所有資料，因為在 mainCtrl 中，將學生資料塞到 results 屬性中
             $.each(data.results, function(i, n) {
                 // 以 js 方式建立標籤，<tr> Row, <td> Document
@@ -180,7 +180,7 @@
         // 向後端發出 Ajax 請求，類型是 delete
         $.ajax({
             type: "delete",
-            url: "/student/" + sid,
+            url: "/api/students/" + sid,
             success: function(mes) {
                 if (mes.results == 0) {
                     alert("資料庫寫入失敗了...")
@@ -201,7 +201,7 @@
         // 該子元素含有學號資料，透過 attr() 獲得數據
         var sid = $(this).attr("data-sid");
         // 跳轉頁面
-        window.location = "/student/" + sid;
+        window.location = "/api/student/" + sid;
     })
 </script>
 
