@@ -11,8 +11,8 @@ router.route('/')
 
 router.route('/:id')
   .get(ctrl.get)
+  .delete(ctrl.del)
 //   .put(validate(paramValidation.set), ctrl.set)
-//   .delete(ctrl.del)
 
 router.param('id', ctrl.load)
 

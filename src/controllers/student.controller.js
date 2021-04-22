@@ -129,11 +129,8 @@ var updateStudent = function(req, res){
     })
 }
 
-
-// 前端發來 Ajax 請求，型態為 delete，要求刪除學生資料
-var deleteStudent = function(req, res){
-    // 從資料庫中讀取學生資料
-    Student.find({"stu_id" : req.params.sid}, function(err, results){
+function del (req, res, next){
+    Student.find({"stu_id" : req.params.id}, function(err, results){
         if(results.length == 0){
             res.send("-1")  // 沒有這位學生
             return
@@ -150,10 +147,9 @@ var deleteStudent = function(req, res){
 }
 
 
-export default {list, get, load, }
+export default {list, get, load, del, }
 exports.showIndex = showIndex;
 exports.showAdd = showAdd;
 exports.addStudentData = addStudentData;
 exports.showStudent = showStudent;
 exports.updateStudent = updateStudent;
-exports.deleteStudent = deleteStudent;
