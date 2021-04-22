@@ -4,9 +4,9 @@
   "description": "這是第四個MVC專案，包含了連結資料庫、Ajax使用，學習RESTful風格的路由設置，資料庫的模組採用 mongoose",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "DEBUG=app:* NODE_ENV=development node ./src/app.js"
   },
-  "author": "",
+  "author": "Joe",
   "license": "ISC",
   "dependencies": {
     "ejs": "^3.0.2",
