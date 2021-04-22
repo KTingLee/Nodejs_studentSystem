@@ -1,7 +1,8 @@
-var formidable = require("formidable");
-var Student = require("../models/Student.js")
-var url = require("url")
-var querystring = require("querystring")
+import httpStatus from 'http-status'
+import formidable from 'formidable'
+import Student from '../models/Student.js'
+import url from 'url'
+import querystring from 'querystring'
 
 // 首頁
 var showIndex = function(req, res){
@@ -70,12 +71,13 @@ function list (req, res, next){
 
 async function load (req, res, next, id) {
     if (!Number.isInteger(+id)) {
-        throw new APIError({status: httpStatus.BAD_REQUEST, message: 'user id error'})
+        return res.status(httpStatus.BAD_REQUEST).json({message: 'user id error'})
       }
       try {
-        const obj = await Student.find({"stu_id" : id})
+        const obj = await Student.findOne({"stu_id" : id})
+        console.log(obj);
         if (!obj) {
-          throw new APIError({status: httpStatus.NOT_FOUND, message: 'user id not exist'})
+            return res.status(httpStatus.NOT_FOUND).json({message: 'user id not exist'})
         }
         req.obj = obj
         next()
