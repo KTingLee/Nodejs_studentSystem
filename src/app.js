@@ -2,10 +2,11 @@
 製作學生管理頁面，可以增刪改查學生資料
 */
 
-var express = require("express")
-var app = express();
-var mongoose = require('mongoose');
-var mainCtrl = require("./controllers/mainCtrl.js")
+import express from 'express'
+const debug = require('debug')('app:app')
+const app = express();
+const mongoose = require('mongoose');
+const mainCtrl = require("./controllers/mainCtrl.js")
 
 // 連結資料庫
 mongoose.connect('mongodb://localhost/colleges', {useNewUrlParser: true});
