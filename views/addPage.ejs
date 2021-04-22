@@ -169,13 +169,12 @@
         $.ajax({
             type : "get",
             url  : "/api/students/" + $("input[name=stu_id]").val(),
-            success : function(mes){
-                if (mes != 1){
-                    $("#stu_tip").removeClass().addClass("alert alert-warning").html("學號已存在").show();
-                }else{
-                    $("#stu_tip").removeClass().addClass("alert alert-success").html("學號可使用").show();
-                    $("#btn1").removeAttr("disabled")
-                }
+            error: function (res) {
+                $("#stu_tip").removeClass().addClass("alert alert-success").html("學號可使用").show();
+                $("#btn1").removeAttr("disabled")
+            },
+            success : function(res){
+                $("#stu_tip").removeClass().addClass("alert alert-warning").html("學號已存在").show();
             }
         })
     })
