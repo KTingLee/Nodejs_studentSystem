@@ -56,7 +56,6 @@ studentSchema.statics.checkStu_id = function(stu_id, callback){
 
 /* 建立資料庫model */
 // 資料庫中會自行建立 students 集合(若 students 集合不存在)
-var Student = mongoose.model("Student", studentSchema);
+const Student = mongoose.model("Student", studentSchema)
 
-
-module.exports = Student;
+module.exports = Student

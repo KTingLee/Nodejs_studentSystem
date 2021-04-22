@@ -1,5 +1,5 @@
 {
-  "name": "project4_studentSystem_v2",
+  "name": "student-system",
   "version": "1.0.0",
   "description": "這是第四個MVC專案，包含了連結資料庫、Ajax使用，學習RESTful風格的路由設置，資料庫的模組採用 mongoose",
   "main": "app.js",
@@ -18,7 +18,9 @@
     "debug": "^4.3.1",
     "ejs": "^3.0.2",
     "express": "^4.17.1",
+    "express-validation": "^3.0.8",
     "formidable": "^1.2.2",
+    "http-status": "^1.5.0",
     "mongodb": "^3.5.5",
     "mongoose": "^5.9.7",
     "nodemon": "^2.0.7"
