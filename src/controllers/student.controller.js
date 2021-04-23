@@ -2,6 +2,8 @@ import httpStatus from 'http-status'
 import Student from '../models/Student.js'
 import url from 'url'
 
+const debug = require('debug')('app:student:ctrl')
+
 // 首頁
 var showIndex = function (req, res) {
   res.render("index", {})
@@ -79,34 +81,16 @@ function show(req, res, next) {
   })
 }
 
-// 修改學生資料，前端會發出 post 請求
-var updateStudent = function (req, res) {
-  // 查詢資料庫並對學生做修改
-  Student.find({ "stu_id": req.params.sid }, function (err, results) {
-    if (results.length == 0) {
-      res.json({ "results": -1 })  // 找不到學生就回傳 -1
-      return
-    }
-    var thisStudent = results[0]
-    // 前端用 post 請求，所以要建立 formidable 表單
-    const form = formidable({ multiples: true });
-    form.parse(req, (err, fields, files) => {
-      thisStudent.Name = fields.Name;
-      thisStudent.Age = fields.Age;
-      thisStudent.Sex = fields.Sex;
-      thisStudent.Provice = fields.Provice;
+async function set (req, res, next) {
+  let student = req.obj
+  Object.assign(student, req.body)
 
-      // 儲存結果
-      thisStudent.save(function (err) {
-        if (err) {
-          res.json({ "results": -2 })  // 寫入失敗，回傳 -2
-          return
-        } else {
-          res.json({ "results": 1 })
-        }
-      });
-    })
-  })
+  try {
+    await student.save()
+    return res.status(httpStatus.OK).json({message: 'success'})
+  } catch (e) {
+    next(e)
+  }
 }
 
 function del(req, res, next) {
@@ -127,7 +111,6 @@ function del(req, res, next) {
 }
 
 
-export default { list, get, load, del, add, show, }
+export default { list, get, load, del, add, show, set, }
 exports.showIndex = showIndex;
 exports.showAdd = showAdd;
-exports.updateStudent = updateStudent;

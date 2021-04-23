@@ -12,7 +12,7 @@ router.route('/')
 router.route('/:id')
   .get(ctrl.get)
   .delete(ctrl.del)
-//   .put(validate(paramValidation.set), ctrl.set)
+  .put(ctrl.set)
 
 router.route('/:id/show')
   .get(ctrl.show)

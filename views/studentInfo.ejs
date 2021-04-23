@@ -151,41 +151,39 @@
     </footer>
 </body>
 
-<!-- 透過Ajax，以 post 提交學生資料 -->
 <script type="text/javascript">
-    // 監聽 id=btn1 的元素，當觸發點擊事件時，執行匿名函數
     $("#btn1").click(function(){
         // 根據當前網址，抓取學號
-        var url_reg = /\/([\d]{6})$/
-        var stu_url_id = url_reg.exec(location.href)[1]
+        const urlPattern = /\/([\d]{6})\/show$/
+        const studentId = urlPattern.exec(location.href)[1]
 
         // 輸入框學號
-        var sid = $("input[name=stu_id]").val()
+        const currentId = $("input[name=stu_id]").val()
         
         // 驗證網址中的學號是否與輸入框一致
-        if(stu_url_id != sid){
+        if(studentId !== currentId){
             alert("不要亂改學號！")
             return
         }
-        // 向 /student/:sid 路由，發出 post 請求
-        $.post("/students/" + stu_url_id, {
-            Name   : $("input[name=Name]").val(),
-            Age    : $("input[name=Age]").val(),
-            Sex    : $("input[name=Sex]:checked").val(),
-            Provice: $("input[name=Provice]").val()
-        }, 
-        // 異步等待後端發送來的訊息，之所以是 results 是因為 mainCtrl 中，回傳的部分寫 res.json({"results" : 1})
-        function(mes){
-            if(mes.results == 1){
+
+        $.ajax({
+            type: 'put',
+            url: `/api/students/${studentId}`,
+            data: {
+                Name: $('input[name=Name]').val(),
+                Age: $('input[name=Age]').val(),
+                Sex: $('input[name=Sex]:checked').val(),
+                Provice: $('input[name=Provice]').val()
+            },
+            dataType: 'json',
+            success: function () {
                 alert('學生資料修改成功！')
-                // 清空所有輸入框
-                window.location = "/"
-                return;
-            }else if(mes.results == -1){
+                window.location = `/`
+                return
+            },
+            error: function () {
                 alert('學生修改失敗，沒有這位學生哦QQ')
-                return;
-            }else if(mes.results == -2){
-                alert('學生資料儲存失敗，資料庫出錯了QQ')
+                return
             }
         })
     })
