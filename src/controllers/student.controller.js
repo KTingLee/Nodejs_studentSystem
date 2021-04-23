@@ -4,24 +4,27 @@ import url from 'url'
 
 const debug = require('debug')('app:student:ctrl')
 
-function add(req, res, next) {
-  const student = req.body
-  Student.insertStudent(student, function (result) {
-    // 寫入結果，向前端回報資料
-    res.json({ "results": result })
-  })
+async function add(req, res, next) {
+  const isExist = await Student.findOne({id: req.body.id})
+  if (isExist) {
+    return res.status(httpStatus.BAD_REQUEST).json({message: 'student exist'})
+  }
 
+  try {
+    const student = new Student(req.body)
+    const result = await student.save()
+    return res.status(httpStatus.OK).json(result)
+  } catch(e) {
+    next(e)
+  }
 }
 
 function get(req, res, next) {
-  Student.checkStu_id(req.obj.stu_id, function (id_can_use) {
-    if (id_can_use != 1) {
-      res.send(id_can_use.toString())  // 若學號存在會回傳 0；若不符合格式會回傳 -2
-      return;
-    }
-    res.send("1")
-  })
+  const student = req.obj
+  delete student._id
+  delete student.__v
 
+  return res.status(httpStatus.OK).json(student)
 }
 
 function list(req, res, next) {
@@ -50,7 +53,7 @@ async function load(req, res, next, id) {
     return res.status(httpStatus.BAD_REQUEST).json({ message: 'user id error' })
   }
   try {
-    const obj = await Student.findOne({ "stu_id": id })
+    const obj = await Student.findOne({id: id})
     if (!obj) {
       return res.status(httpStatus.NOT_FOUND).json({ message: 'user id not exist' })
     }

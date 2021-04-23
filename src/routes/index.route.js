@@ -3,7 +3,7 @@ import httpStatus from 'http-status'
 
 import studentRoutes from './student.route'
 
-const debug = require('debug')('bxb:route:index')
+const debug = require('debug')('app:route:index')
 
 const router = Router()
 
