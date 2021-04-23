@@ -170,10 +170,10 @@
             type: 'put',
             url: `/api/students/${studentId}`,
             data: {
-                Name: $('input[name=Name]').val(),
-                Age: $('input[name=Age]').val(),
-                Sex: $('input[name=Sex]:checked').val(),
-                Provice: $('input[name=Provice]').val()
+                name: $('input[name=Name]').val(),
+                age: $('input[name=Age]').val(),
+                sex: $('input[name=Sex]:checked').val(),
+                provice: $('input[name=Provice]').val()
             },
             dataType: 'json',
             success: function () {
