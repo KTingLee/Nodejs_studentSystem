@@ -146,15 +146,15 @@
                 $tr = $("<tr></tr>")
 
                 // 建立 td 標籤及內容，並添加在 tr 變數下(tr變數為 <tr> 標籤)
-                $("<td></td>").html(n.stu_id).appendTo($tr);
-                $("<td></td>").html(n.Name).appendTo($tr);
-                $("<td></td>").html(n.Sex).appendTo($tr);
-                $("<td></td>").html(n.Age).appendTo($tr);
-                $("<td></td>").html(n.Provice).appendTo($tr);
+                $("<td></td>").html(n.id).appendTo($tr);
+                $("<td></td>").html(n.name).appendTo($tr);
+                $("<td></td>").html(n.sex).appendTo($tr);
+                $("<td></td>").html(n.age).appendTo($tr);
+                $("<td></td>").html(n.provice).appendTo($tr);
 
                 // 建立修改、刪除按鈕，並附上學生學號資料
-                $delBtn = "<input type='button' class='btn btn-danger delBtn'  data-sid=" + n.stu_id + " value='刪除'>"
-                $modBtn = "<input type='button' class='btn btn-warning modBtn' data-sid=" + n.stu_id + " value='修改'>"
+                $delBtn = "<input type='button' class='btn btn-danger delBtn'  data-sid=" + n.id + " value='刪除'>"
+                $modBtn = "<input type='button' class='btn btn-warning modBtn' data-sid=" + n.id + " value='修改'>"
                 $("<td>" + $delBtn + " " + $modBtn + "</td>").appendTo($tr)
 
                 // 最後將 tr 變數添加至表單中
@@ -167,31 +167,28 @@
 
     // 因為上述按鈕是以動態方式產生，所以利用委託函數來監聽(委託其父元素)
     // 監聽 class 包含 delBtn 的子元素，並監聽 click 事件
-    $("#studentsList").delegate(".delBtn", "click", function() {
-        // 確認框
-        if (!confirm("確定刪除？")) {
-            return;
-        }
+    $('#studentsList').delegate('.delBtn', 'click', function() {
+        if (!confirm('確定刪除？')) return
+
         // 存放 this 物件，不然等等 ajax 函數中引用的 this 會衝突，這邊的 this 為 input 標籤
-        var $this = $(this);
+        const $this = $(this)
 
         // 該子元素含有學號資料，透過 attr() 獲得數據
-        var sid = $(this).attr("data-sid");
-        // 向後端發出 Ajax 請求，類型是 delete
+        const studentId = $(this).attr('data-sid')
+
         $.ajax({
-            type: "delete",
-            url: "/api/students/" + sid,
+            type: 'delete',
+            url: `/api/students/${studentId}`,
             success: function(mes) {
-                if (mes.results == 0) {
-                    alert("資料庫寫入失敗了...")
-                } else if (mes.results == -1) {
-                    alert("沒有這位學生！")
-                } else {
-                    alert("學生已刪除！")
-                    // 不用載入頁面以重新刷新
-                    // 不停向上找，找到為 <tr> 就刪除(找到符合就不再找)
-                    $this.closest("tr").remove()
-                }
+                alert('學生已刪除！')
+                // 不用載入頁面以重新刷新
+                // 不停向上找，找到為 <tr> 就刪除(找到符合就不再找)
+                $this.closest('tr').remove()
+                return
+            },
+            error: function () {
+                alert('沒有這位學生！')
+                return
             }
         })
     })

@@ -4,7 +4,6 @@ import routes from './routes/index.route'
 
 const app = express();
 const debug = require('debug')('app:app')
-const mainCtrl = require("./controllers/student.controller.js")
 
 mongoose.connect('mongodb://localhost/colleges', {useNewUrlParser: true});
 

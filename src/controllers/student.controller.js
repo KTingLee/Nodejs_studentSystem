@@ -84,21 +84,10 @@ async function set(req, res, next) {
   }
 }
 
-function del(req, res, next) {
-  Student.find({ "stu_id": req.params.id }, function (err, results) {
-    if (results.length == 0) {
-      res.send("-1")  // 沒有這位學生
-      return
-    }
-    var thisStudent = results[0]
-    thisStudent.remove(function (err) {
-      if (err) {
-        res.json({ "results": 0 })  // 刪除失敗回傳 0
-      } else {
-        res.json({ "results": 1 })  // 刪除成功回傳 1
-      }
-    })
-  })
+async function del(req, res, next) {
+  const student = req.obj
+  const result = await student.remove()
+  return res.status(httpStatus.OK).json(result)
 }
 
 
