@@ -4,16 +4,6 @@ import url from 'url'
 
 const debug = require('debug')('app:student:ctrl')
 
-// 首頁
-var showIndex = function (req, res) {
-  res.render("index", {})
-};
-
-// 增加學生頁面
-var showAdd = function (req, res) {
-  res.render("addPage", {})
-};
-
 function add(req, res, next) {
   const student = req.body
   Student.insertStudent(student, function (result) {
@@ -23,8 +13,6 @@ function add(req, res, next) {
 
 }
 
-// 當學號輸入框一沒有 focus 時(也就是離開輸入)會觸發 blur 事件
-// 觸發後會向 /student/add 路由，發出 propfind 請求(一般是做為查詢的請求)，接著後端接收到請求後，執行此函數
 function get(req, res, next) {
   Student.checkStu_id(req.obj.stu_id, function (id_can_use) {
     if (id_can_use != 1) {
@@ -81,13 +69,13 @@ function show(req, res, next) {
   })
 }
 
-async function set (req, res, next) {
+async function set(req, res, next) {
   let student = req.obj
   Object.assign(student, req.body)
 
   try {
     await student.save()
-    return res.status(httpStatus.OK).json({message: 'success'})
+    return res.status(httpStatus.OK).json({ message: 'success' })
   } catch (e) {
     next(e)
   }
@@ -111,6 +99,4 @@ function del(req, res, next) {
 }
 
 
-export default { list, get, load, del, add, show, set, }
-exports.showIndex = showIndex;
-exports.showAdd = showAdd;
+export default { list, get, load, del, add, show, set }
