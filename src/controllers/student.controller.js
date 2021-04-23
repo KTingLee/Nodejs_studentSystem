@@ -27,24 +27,20 @@ function get(req, res, next) {
   return res.status(httpStatus.OK).json(student)
 }
 
-function list(req, res, next) {
-  // 需提供的頁碼，因為前端提供的分頁條起始為第 1 頁，但 js 起始索引為 0，故要減 1，這樣才不會錯誤地略過資料
-  var thisPage = url.parse(req.url, true).query.page - 1 || 0;
+async function list(req, res, next) {
+  // 需提供的頁碼，因為前端提供的分頁條起始為第 1 頁，但 js 起始索引為 0，故等等撈資料時要減 1，這樣才不會錯誤地略過資料
+  const page = req.query.page
 
   // 每頁要讀取的資料數
-  var pageSize = 2;
+  const pageSize = 2;
 
   // 獲得所有資料數量
-  Student.count({}, function (err, count) {
-    // 查詢 students 集合中的所有資料，並限制輸出數量(limit)以及略過數量(skip)
-    Student.find({}).limit(pageSize).skip(pageSize * thisPage).exec(function (err, results) {
-      // 包成 json，並放在其屬性 results 中。 再傳至前端 Ajax 要使用的接口
-      // 因為 mongoose 查詢時，回傳的就是 json，所以不用再做格式轉換
-      res.json({
-        "pageAmount": Math.ceil(count / pageSize),
-        "results": results
-      })
-    })
+  const total = await Student.countDocuments({})
+  const students = await Student.find({}).limit(pageSize).skip(pageSize * (page - 1))
+
+  return res.status(httpStatus.OK).json({
+    pageAmount: Math.ceil(total / pageSize),
+    results: students
   })
 }
 
