@@ -14,6 +14,9 @@ router.route('/:id')
   .delete(ctrl.del)
 //   .put(validate(paramValidation.set), ctrl.set)
 
+router.route('/:id/show')
+  .get(ctrl.show)
+
 router.param('id', ctrl.load)
 
 export default router

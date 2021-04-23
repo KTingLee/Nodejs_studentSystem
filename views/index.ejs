@@ -201,7 +201,7 @@
         // 該子元素含有學號資料，透過 attr() 獲得數據
         var sid = $(this).attr("data-sid");
         // 跳轉頁面
-        window.location = "/api/students/" + sid;
+        window.location = `/api/students/${sid}/show`;
     })
 </script>
 

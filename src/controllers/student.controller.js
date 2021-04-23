@@ -61,7 +61,6 @@ async function load(req, res, next, id) {
   }
   try {
     const obj = await Student.findOne({ "stu_id": id })
-    console.log(obj);
     if (!obj) {
       return res.status(httpStatus.NOT_FOUND).json({ message: 'user id not exist' })
     }
@@ -73,17 +72,10 @@ async function load(req, res, next, id) {
   }
 }
 
-// 顯示學生個人資料頁面
-var showStudent = function (req, res) {
-  // 從資料庫中讀取學生資料
-  Student.find({ "stu_id": req.params.sid }, function (err, results) {
-    if (results.length == 0) {
-      res.send("沒有這位學生")
-      return
-    }
-    res.render("studentInfo", {
-      "studentInfo": results[0]
-    })
+function show(req, res, next) {
+  const student = req.obj
+  res.render('studentInfo', {
+    studentInfo: student
   })
 }
 
@@ -135,8 +127,7 @@ function del(req, res, next) {
 }
 
 
-export default { list, get, load, del, add, }
+export default { list, get, load, del, add, show, }
 exports.showIndex = showIndex;
 exports.showAdd = showAdd;
-exports.showStudent = showStudent;
 exports.updateStudent = updateStudent;
