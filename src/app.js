@@ -10,10 +10,12 @@ mongoose.connect('mongodb://localhost/colleges', {useNewUrlParser: true});
 
 app.set("view engine", "ejs")
 
+app.use(express.json({ limit: 1024 * 1024 * 1024 })) // 1G
+app.use(express.urlencoded({ extended: true }))
+
 app.use('/api', routes)
 app.get("/",       mainCtrl.showIndex);       // 首頁
 app.get("/add",    mainCtrl.showAdd);         // 增加學生頁面
-// app.post("/add",   mainCtrl.addStudentData);  // 增加學生資料置資料庫
 // app.get("/student/:sid",    mainCtrl.showStudent);     // 修改學生頁面
 // app.post("/student/:sid",   mainCtrl.updateStudent);   // 更改學生動作
 

@@ -187,8 +187,7 @@
 
     // 監聽 id=btn1 的元素，當觸發點擊事件時，執行匿名函數
     $("#btn1").click(function(){
-        // 向 /add 路由，發出 post 請求
-        $.post("/add", {
+        $.post("/api/students", {
             stu_id : $("input[name=stu_id]").val(),
             Name   : $("input[name=Name]").val(),
             Age    : $("input[name=Age]").val(),

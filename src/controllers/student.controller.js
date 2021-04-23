@@ -1,8 +1,6 @@
 import httpStatus from 'http-status'
-import formidable from 'formidable'
 import Student from '../models/Student.js'
 import url from 'url'
-import querystring from 'querystring'
 
 // 首頁
 var showIndex = function (req, res) {
@@ -14,24 +12,12 @@ var showAdd = function (req, res) {
   res.render("addPage", {})
 };
 
-// 前端利用 Ajax 提交 post 請求，後端在此以 formidable 獲取數據，並寫入資料庫中
-// 但若是直接吃前端的資料並寫入資料庫，容易被破解，所以先在 Student 模組中，寫好一個函數，用以確認資料是否符合格式
-var addStudentData = function (req, res) {
-  // 建立 formidable 表單
-  const form = formidable({ multiples: true });
-
-  // 解析表單，文本資料儲存在 fields 中，檔案則在 files
-  form.parse(req, (err, fields, files) => {
-    if (err) {
-      next(err);
-      return;
-    }
-    // 寫入資料庫
-    Student.insertStudent(fields, function (result) {
-      // 寫入結果，向前端回報資料
-      res.json({ "results": result })
-    })
-  });
+function add(req, res, next) {
+  const student = req.body
+  Student.insertStudent(student, function (result) {
+    // 寫入結果，向前端回報資料
+    res.json({ "results": result })
+  })
 
 }
 
@@ -149,9 +135,8 @@ function del(req, res, next) {
 }
 
 
-export default { list, get, load, del, }
+export default { list, get, load, del, add, }
 exports.showIndex = showIndex;
 exports.showAdd = showAdd;
-exports.addStudentData = addStudentData;
 exports.showStudent = showStudent;
 exports.updateStudent = updateStudent;

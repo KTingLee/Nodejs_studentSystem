@@ -7,7 +7,7 @@ const router = express.Router()
 
 router.route('/')
   .get(ctrl.list)
-//   .post(validate(paramValidation.add), acl.checkAdmin, ctrl.add)
+  .post(ctrl.add)
 
 router.route('/:id')
   .get(ctrl.get)
