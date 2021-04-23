@@ -6,13 +6,13 @@ import ctrl from '../controllers/student.controller'
 const router = express.Router()
 
 router.route('/')
-  .get(ctrl.list)
-  .post(ctrl.add)
+  .get(validate(paramValidation.list), ctrl.list)
+  .post(validate(paramValidation.add), ctrl.add)
 
 router.route('/:id')
   .get(ctrl.get)
   .delete(ctrl.del)
-  .put(ctrl.set)
+  .put(validate(paramValidation.set), ctrl.set)
 
 router.route('/:id/show')
   .get(ctrl.show)
