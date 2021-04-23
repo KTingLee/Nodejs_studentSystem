@@ -5,7 +5,7 @@ import routes from './routes/index.route'
 const app = express();
 const debug = require('debug')('app:app')
 
-mongoose.connect('mongodb://localhost/colleges', {useNewUrlParser: true});
+mongoose.connect('mongodb://localhost/colleges', {useNewUrlParser: true, useUnifiedTopology: true});
 
 app.set("view engine", "ejs")
 

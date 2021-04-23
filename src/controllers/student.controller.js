@@ -32,7 +32,7 @@ async function list(req, res, next) {
   const page = req.query.page
 
   // 每頁要讀取的資料數
-  const pageSize = 2;
+  const pageSize = 2
 
   // 獲得所有資料數量
   const total = await Student.countDocuments({})
