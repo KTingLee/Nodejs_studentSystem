@@ -117,10 +117,10 @@
 <script type="text/javascript">
     
     // 載入時直接請求，並建立分頁條
-    $.get("/api/students?page=1", function(data){
+    $.get('/api/students?page=1', function(data){
         // 製作分頁條
         new PageNav({
-            boxid: "pagenavbox",
+            boxid: 'pagenavbox',
             page: 1,
             pageAmount: data.pageAmount,
             change: function(pageNumber) {
@@ -135,31 +135,28 @@
     // 發出 Ajax 請求(採 get 方式)，以獲取學生資料
     function getStudentData(pageNumber) {
         // 先清空學生表格中的元素，待會會補上
-        $("#studentsList").empty()
+        $('#studentsList').empty()
 
-        // 前往 "後端為前端提供資料的接口(路由)"，以獲得學生資料
-        $.get("/api/students?page=" + pageNumber, function(data) {
-            // 遍歷所有資料，因為在 mainCtrl 中，將學生資料塞到 results 屬性中
+        $.get(`/api/students?page=${pageNumber}`, function(data) {
             $.each(data.results, function(i, n) {
                 // 以 js 方式建立標籤，<tr> Row, <td> Document
                 // 建立 tr 標籤，並放在變數 tr 中
-                $tr = $("<tr></tr>")
+                $tr = $('<tr></tr>')
 
                 // 建立 td 標籤及內容，並添加在 tr 變數下(tr變數為 <tr> 標籤)
-                $("<td></td>").html(n.id).appendTo($tr);
-                $("<td></td>").html(n.name).appendTo($tr);
-                $("<td></td>").html(n.sex).appendTo($tr);
-                $("<td></td>").html(n.age).appendTo($tr);
-                $("<td></td>").html(n.provice).appendTo($tr);
+                $('<td></td>').html(n.id).appendTo($tr);
+                $('<td></td>').html(n.name).appendTo($tr);
+                $('<td></td>').html(n.sex).appendTo($tr);
+                $('<td></td>').html(n.age).appendTo($tr);
+                $('<td></td>').html(n.provice).appendTo($tr);
 
                 // 建立修改、刪除按鈕，並附上學生學號資料
-                $delBtn = "<input type='button' class='btn btn-danger delBtn'  data-sid=" + n.id + " value='刪除'>"
-                $modBtn = "<input type='button' class='btn btn-warning modBtn' data-sid=" + n.id + " value='修改'>"
-                $("<td>" + $delBtn + " " + $modBtn + "</td>").appendTo($tr)
+                $delBtn = `<input type='button' class='btn btn-danger delBtn'  data-sid=${n.id} value='刪除'>`
+                $modBtn = `<input type='button' class='btn btn-warning modBtn' data-sid=${n.id} value='修改'>`
+                $(`<td>${$delBtn} ${$modBtn}</td>`).appendTo($tr)
 
                 // 最後將 tr 變數添加至表單中
-                $tr.appendTo($("#studentsList"))
-
+                $tr.appendTo($('#studentsList'))
             })
         })
     }
